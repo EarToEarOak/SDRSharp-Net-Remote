@@ -42,6 +42,7 @@ namespace SDRSharp.NetRemote
     {
         public ManualResetEvent _signal = new ManualResetEvent(false);
 
+        private const int PORT = 3382;
         private const int MAX_CLIENTS = 4;
         private static string[] COMMANDS = { "get", "set", "exe" };
         private static string[] METHODS = { "audiogain",
@@ -69,7 +70,7 @@ namespace SDRSharp.NetRemote
 
         public void Start()
         {
-            IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, 2055);
+            IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, PORT);
             Socket socket = new Socket(AddressFamily.InterNetwork,
                                        SocketType.Stream, ProtocolType.Tcp);
 
