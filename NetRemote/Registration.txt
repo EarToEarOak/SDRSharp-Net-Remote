@@ -1,0 +1,1 @@
+<add key="Net Remote" value="SDRSharp.NetRemote.NetRemotePlugin,SDRSharp.NetRemote" />
