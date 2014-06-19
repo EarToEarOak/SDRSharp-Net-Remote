@@ -308,6 +308,8 @@ namespace SDRSharp.NetRemote
                     Error(client, "Method error", ex.Message);
                 else if (ex is ValueException)
                     Error(client, "Value error", ex.Message);
+                else if (ex is SourceException)
+                    Error(client, "Source error", ex.Message);
                 else
                     throw;
             }
@@ -361,6 +363,8 @@ namespace SDRSharp.NetRemote
                     case "centerfrequency":
                         if (set)
                         {
+                            if (!_control.SourceIsTunable)
+                                throw new SourceException("Not tunable");
                             long freq =
                                 _json.ConvertToType<long>(CheckValue<long>(value));
                             CheckRange(freq, 1, 999999999999);
@@ -467,5 +471,10 @@ namespace SDRSharp.NetRemote
     public class ValueException : Exception
     {
         public ValueException(string message) : base(message) { }
+    }
+
+    public class SourceException : Exception
+    {
+        public SourceException(string message) : base(message) { }
     }
 }
