@@ -50,6 +50,7 @@ namespace SDRSharp.NetRemote
                                             "centerfrequency",
                                             "detectortype",
                                             "isplaying",
+                                            "sourceistunable",
                                             "start",
                                             "stop",
                                             "close"};
@@ -401,6 +402,13 @@ namespace SDRSharp.NetRemote
                         else
                             Response(client, "IsPlaying",
                                      _control.IsPlaying);
+                        break;
+                    case "sourceistunable":
+                        if (set)
+                            throw new MethodException("Read only");
+                        else
+                            Response(client, "SourceIsTunable",
+                                     _control.SourceIsTunable);
                         break;
                     default:
                         string type = set ? "Set" : "Get";
