@@ -30,7 +30,7 @@ You should get a JSON response showing the plugin name and version, for example:
     {"Name":"Net Remote","Version":"1.0.5282.28765"}
 
 ## Commands ##
-Commands are JSON formatted strings containing a *Command*, *Method* and an optional *Value* attributes. For example to set the current volume to 30:
+Commands are JSON formatted strings containing a *Command*, *Method* and  optional *Value* attributes. For example to set the current volume to 30:
 
     {"Command": "Set", "Method": "AudioGain", "Value": 30}
 
@@ -38,6 +38,7 @@ Commands are JSON formatted strings containing a *Command*, *Method* and an opti
 Or to test if SDRSharp is currently playing:
 
     {"Command": "Get", "Method": "IsPlaying"}
+
 Which returns:
 
     {"IsPlaying":true}
