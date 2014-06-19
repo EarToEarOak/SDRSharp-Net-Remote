@@ -213,31 +213,16 @@ namespace SDRSharp.NetRemote
             Send(client, _json.Serialize(version) + "\r\n");
         }
 
-        private void ErrorSyntax(Client client, string message)
+        private void Error(Client client, string type, string message)
         {
-            Response(client, "Syntax Error", message);
+            Response(client, type, message);
         }
 
-        private void ErrorCommand(Client client, string message)
-        {
-            Response(client, "Command Error", message);
-        }
-
-        private void ErrorMethod(Client client, string message)
-        {
-            Response(client, "Method Error", message);
-        }
-
-        private void ErrorValue(Client client, string message)
-        {
-            Response(client, "Value Error", message);
-        }
-
-        private void Response(Client client, string key, string message)
+        private void Response(Client client, string key, string value)
         {
             Dictionary<string, string> version = new Dictionary<string, string>
             {
-                {key, message}
+                {key, value}
             };
             Send(client, _json.Serialize(version) + "\r\n");
         }
@@ -316,13 +301,13 @@ namespace SDRSharp.NetRemote
             catch (Exception ex)
             {
                 if (ex is ArgumentException || ex is InvalidOperationException)
-                    ErrorSyntax(client, data);
+                    Error(client, "Syntax error", data);
                 else if (ex is CommandException)
-                    ErrorCommand(client, ex.Message);
+                    Error(client, "Command error", ex.Message);
                 else if (ex is MethodException)
-                    ErrorMethod(client, ex.Message);
+                    Error(client, "Method error", ex.Message);
                 else if (ex is ValueException)
-                    ErrorValue(client, ex.Message);
+                    Error(client, "Value error", ex.Message);
                 else
                     throw;
             }
