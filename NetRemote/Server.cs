@@ -405,6 +405,8 @@ namespace SDRSharp.NetRemote
                                                      type, method);
                         throw new MethodException(error);
                 }
+                if (set)
+                    Response(client, "Result", "OK");
             }
         }
 
