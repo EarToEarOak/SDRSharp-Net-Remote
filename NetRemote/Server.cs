@@ -40,8 +40,6 @@ namespace SDRSharp.NetRemote
 
     class Server
     {
-        public ManualResetEvent _signal = new ManualResetEvent(false);
-
         private const int PORT = 3382;
         private const int MAX_CLIENTS = 4;
         private static string[] COMMANDS = { "get", "set", "exe" };
@@ -54,6 +52,8 @@ namespace SDRSharp.NetRemote
                                             "start",
                                             "stop",
                                             "close"};
+
+        private ManualResetEvent _signal = new ManualResetEvent(false);
 
         private ISharpControl _control;
         private Object lockClients = new Object();
@@ -147,7 +147,7 @@ namespace SDRSharp.NetRemote
             }
         }
 
-        public void ReadCallback(IAsyncResult ar)
+        private void ReadCallback(IAsyncResult ar)
         {
             String data = String.Empty;
             Client client = (Client)ar.AsyncState;
@@ -445,7 +445,7 @@ namespace SDRSharp.NetRemote
     }
 
 
-    public class Client
+    class Client
     {
         public const int BUFFER_SIZE = 256;
         public Socket socket = null;
@@ -458,22 +458,22 @@ namespace SDRSharp.NetRemote
         }
     }
 
-    public class CommandException : Exception
+    class CommandException : Exception
     {
         public CommandException(string message) : base(message) { }
     }
 
-    public class MethodException : Exception
+    class MethodException : Exception
     {
         public MethodException(string message) : base(message) { }
     }
 
-    public class ValueException : Exception
+    class ValueException : Exception
     {
         public ValueException(string message) : base(message) { }
     }
 
-    public class SourceException : Exception
+    class SourceException : Exception
     {
         public SourceException(string message) : base(message) { }
     }
