@@ -351,7 +351,7 @@ namespace SDRSharp.NetRemote
                         }
                         else
                             Response(client, "AudioGain",
-                                     _control.AudioGain.ToString());
+                                     _control.AudioGain);
                         break;
                     case "audioismuted":
                         if (set)
