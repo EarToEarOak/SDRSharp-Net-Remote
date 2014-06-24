@@ -45,7 +45,9 @@ namespace SDRSharp.NetRemote
         private static string[] COMMANDS = { "get", "set", "exe" };
         private static string[] METHODS = { "audiogain",
                                             "audioismuted",
+                                            "centrefrequency",
                                             "centerfrequency",
+                                            "frequency",
                                             "detectortype",
                                             "isplaying",
                                             "sourceistunable",
@@ -349,6 +351,7 @@ namespace SDRSharp.NetRemote
                             Response<bool>(client, "AudioIsMuted",
                                            _control.AudioIsMuted);
                         break;
+                    case "centrefrequency":
                     case "centerfrequency":
                         if (set)
                         {
@@ -362,6 +365,20 @@ namespace SDRSharp.NetRemote
                         else
                             Response<long>(client, "CenterFrequency",
                                            _control.CenterFrequency);
+                        break;
+                    case "frequency":
+                        if (set)
+                        {
+                            if (!_control.SourceIsTunable)
+                                throw new SourceException("Not tunable");
+                            long freq =
+                                _json.ConvertToType<long>(CheckValue<long>(value));
+                            CheckRange(freq, 1, 999999999999);
+                            _control.Frequency = freq;
+                        }
+                        else
+                            Response<long>(client, "Frequency",
+                                           _control.Frequency);
                         break;
                     case "detectortype":
                         if (set)

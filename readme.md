@@ -59,7 +59,8 @@ For the *Get* and *Set* commands the method can be one of the following:
 
     AudioGain			- Volume <0-40>  
     AudioIsMuted		- Mute <true|false>
-    CenterFrequency		- Frequency <0-999999999999>
+    CenterFrequency		- Centre displayed frequency <0-999999999999>
+	Frequency			- Tuned frequency <0-999999999999>
     DetectorType		- Demodulation <AM|CW|DSB|LSB|NFM|RAW|USB|WFM>
     IsPlaying			- Currently playing <true|false>
 	SourceIsTunable		- Tunable device <true|false>
