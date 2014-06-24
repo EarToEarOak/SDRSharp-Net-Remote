@@ -302,6 +302,9 @@ namespace SDRSharp.NetRemote
                         throw new MethodException(String.Format("Unknown method: {0}",
                             method));
 
+                    if (string.Equals(command, "set") && value==null)
+                        throw new ValueException("Value missing");
+
                     Command(client, command, method, value);
                 }
             }
