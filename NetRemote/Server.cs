@@ -215,7 +215,14 @@ namespace SDRSharp.NetRemote
 
         private void Error(Client client, string type, string message)
         {
-            Response(client, type, message);
+            Dictionary<string, string> version = new Dictionary<string, string>
+            {
+                {"Result", "Error"},
+                {"Type", type},
+                {"Message", message}
+            };
+
+            Send(client, _json.Serialize(version) + "\r\n");
         }
 
         private void Response(Client client, string key, string value)
