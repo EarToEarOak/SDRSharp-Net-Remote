@@ -70,18 +70,18 @@ For the *Exe* command these methods are available:
     Stop				- Stop playing
     Close				- Close network connection
 
-### Result ###
-The result of a command my be either a *result*, *OK* or *Error*.
-
-A *result* is returned for successful *Get* commands, e.g.:
-
-	{"AudioGain":30}
+### Response ###
+The response of a command my be either be *OK* or *Error*.
 
 *OK* is returned if a *Set* command completes:
 
 	{"Result":"OK"}
 
-An *Error* is returned if a problem occurred:
+For *Get* commands *method* and *value* attributes are added, e.g.:
+
+	{"Result":"OK","Method":"AudioGain","Value":30}
+
+An *Error* is returned if a problem occurred, e.g.:
 
 	{"Result":"Error","Type":"Value error","Message":"Value missing"}
 

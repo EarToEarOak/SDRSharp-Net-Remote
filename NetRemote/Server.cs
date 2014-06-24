@@ -225,40 +225,19 @@ namespace SDRSharp.NetRemote
             Send(client, _json.Serialize(version) + "\r\n");
         }
 
-        private void Response(Client client, string key, string value)
+        private void Response<T>(Client client, string key, object value)
         {
-            Dictionary<string, string> version = new Dictionary<string, string>
+            Dictionary<string, object> resp = new Dictionary<string, object>
             {
-                {key, value}
+                {"Result", "OK"}
             };
-            Send(client, _json.Serialize(version) + "\r\n");
-        }
 
-        private void Response(Client client, string key, bool value)
-        {
-            Dictionary<string, bool> version = new Dictionary<string, bool>
+            if (key != null)
             {
-                {key, value}
-            };
-            Send(client, _json.Serialize(version) + "\r\n");
-        }
-
-        private void Response(Client client, string key, int value)
-        {
-            Dictionary<string, int> version = new Dictionary<string, int>
-            {
-                {key, value}
-            };
-            Send(client, _json.Serialize(version) + "\r\n");
-        }
-
-        private void Response(Client client, string key, long value)
-        {
-            Dictionary<string, long> version = new Dictionary<string, long>
-            {
-                {key, value}
-            };
-            Send(client, _json.Serialize(version) + "\r\n");
+                resp.Add("Method", key);
+                resp.Add("Value", (T)value);
+            }
+            Send(client, _json.Serialize(resp) + "\r\n");
         }
 
         private void Parse(Client client)
@@ -302,7 +281,7 @@ namespace SDRSharp.NetRemote
                         throw new MethodException(String.Format("Unknown method: {0}",
                             method));
 
-                    if (string.Equals(command, "set") && value==null)
+                    if (string.Equals(command, "set") && value == null)
                         throw new ValueException("Value missing");
 
                     Command(client, command, method, value);
@@ -360,15 +339,15 @@ namespace SDRSharp.NetRemote
                             _control.AudioGain = gain;
                         }
                         else
-                            Response(client, "AudioGain",
-                                     _control.AudioGain);
+                            Response<int>(client, "AudioGain",
+                                          _control.AudioGain);
                         break;
                     case "audioismuted":
                         if (set)
                             _control.AudioIsMuted = (bool)CheckValue<bool>(value);
                         else
-                            Response(client, "AudioIsMuted",
-                                     _control.AudioIsMuted);
+                            Response<bool>(client, "AudioIsMuted",
+                                           _control.AudioIsMuted);
                         break;
                     case "centerfrequency":
                         if (set)
@@ -381,8 +360,8 @@ namespace SDRSharp.NetRemote
                             _control.CenterFrequency = freq;
                         }
                         else
-                            Response(client, "CenterFrequency",
-                                     _control.CenterFrequency);
+                            Response<long>(client, "CenterFrequency",
+                                           _control.CenterFrequency);
                         break;
                     case "detectortype":
                         if (set)
@@ -392,22 +371,22 @@ namespace SDRSharp.NetRemote
                                 (DetectorType)CheckEnum(det, typeof(DetectorType));
                         }
                         else
-                            Response(client, "DetectorType",
-                                     _control.DetectorType.ToString());
+                            Response<string>(client, "DetectorType",
+                                             _control.DetectorType.ToString());
                         break;
                     case "isplaying":
                         if (set)
                             throw new MethodException("Read only");
                         else
-                            Response(client, "IsPlaying",
-                                     _control.IsPlaying);
+                            Response<bool>(client, "IsPlaying",
+                                           _control.IsPlaying);
                         break;
                     case "sourceistunable":
                         if (set)
                             throw new MethodException("Read only");
                         else
-                            Response(client, "SourceIsTunable",
-                                     _control.SourceIsTunable);
+                            Response<bool>(client, "SourceIsTunable",
+                                           _control.SourceIsTunable);
                         break;
                     default:
                         string type = set ? "Set" : "Get";
@@ -416,7 +395,7 @@ namespace SDRSharp.NetRemote
                         throw new MethodException(error);
                 }
                 if (set)
-                    Response(client, "Result", "OK");
+                    Response<object>(client, null, null);
             }
         }
 
