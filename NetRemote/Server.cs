@@ -121,7 +121,7 @@ namespace SDRSharp.NetRemote
                                            new AsyncCallback(ReadCallback),
                                            client);
             }
-            catch (SocketException e)
+            catch (SocketException)
             {
                 ClientRemove(client);
             }
