@@ -115,9 +115,16 @@ namespace SDRSharp.NetRemote
                 clients.Add(client);
 
             Motd(client);
-            client.socket.BeginReceive(client.buffer, 0, Client.BUFFER_SIZE, 0,
-                                       new AsyncCallback(ReadCallback),
-                                       client);
+            try
+            {
+                client.socket.BeginReceive(client.buffer, 0, Client.BUFFER_SIZE, 0,
+                                           new AsyncCallback(ReadCallback),
+                                           client);
+            }
+            catch (SocketException e)
+            {
+                ClientRemove(client);
+            }
         }
 
         private void ClientRemove(Client client)
@@ -171,6 +178,10 @@ namespace SDRSharp.NetRemote
                                                 new AsyncCallback(ReadCallback),
                                                 client);
                 }
+            }
+            catch (SocketException)
+            {
+                ClientRemove(client);
             }
             catch (ObjectDisposedException)
             {
