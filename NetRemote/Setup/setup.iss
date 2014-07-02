@@ -22,7 +22,7 @@
 ;
 
 #define MyAppName "SDRSharp Net Remote"
-#define MyAppVersion "1.1"
+#define MyAppVersion "1.2"
 #define MyAppPublisher "Al Brown"
 #define MyAppURL "http://eartoearoak.com/software/sdrsharp-net-remote"
 
