@@ -34,6 +34,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
+DefaultGroupName={#MyAppName}
 DefaultDirName={pf}\SDRSharp
 LicenseFile=license.txt
 InfoBeforeFile=help.txt
@@ -42,7 +43,7 @@ Compression=lzma
 SolidCompression=yes
 EnableDirDoesntExistWarning=True
 DirExistsWarning=no
-DisableProgramGroupPage=yes
+DisableProgramGroupPage=auto
 MinVersion=0,5.01sp3
 
 [Languages]
