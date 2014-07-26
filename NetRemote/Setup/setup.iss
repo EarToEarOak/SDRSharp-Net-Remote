@@ -22,7 +22,7 @@
 ;
 
 #define MyAppName "SDRSharp Net Remote"
-#define MyAppVersion "1.2"
+#define MyAppVersion GetFileVersion(AddBackslash(SourcePath) + "SDRSharp.NetRemote.dll")
 #define MyAppPublisher "Al Brown"
 #define MyAppURL "http://eartoearoak.com/software/sdrsharp-net-remote"
 
