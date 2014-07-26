@@ -31,6 +31,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Timers;
 using System.Web.Script.Serialization;
 
 namespace SDRSharp.NetRemote
@@ -77,6 +78,11 @@ namespace SDRSharp.NetRemote
             Socket socket = new Socket(AddressFamily.InterNetwork,
                                        SocketType.Stream, ProtocolType.Tcp);
 
+            System.Timers.Timer timerAlive = new System.Timers.Timer();
+            timerAlive.Elapsed += new ElapsedEventHandler(OnTimerAlive);
+            timerAlive.Interval = 30000;
+            timerAlive.Enabled = true;
+
             try
             {
                 socket.Bind(localEndPoint);
@@ -97,6 +103,7 @@ namespace SDRSharp.NetRemote
             }
             finally
             {
+                timerAlive.Close();
                 socket.Close();
                 foreach (var client in clients.ToArray())
                     ClientRemove(client);
@@ -212,6 +219,15 @@ namespace SDRSharp.NetRemote
             catch (SocketException)
             {
                 ClientRemove(client);
+            }
+        }
+
+        private void OnTimerAlive(object source, ElapsedEventArgs e)
+        {
+            lock (lockClients)
+            {
+                foreach (Client client in clients)
+                    Send(client, "\r\n");
             }
         }
 
