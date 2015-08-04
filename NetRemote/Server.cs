@@ -80,7 +80,7 @@ namespace SDRSharp.NetRemote
 
             System.Timers.Timer timerAlive = new System.Timers.Timer();
             timerAlive.Elapsed += new ElapsedEventHandler(OnTimerAlive);
-            timerAlive.Interval = 30000;
+            timerAlive.Interval = 1000;
             timerAlive.Enabled = true;
 
             try
@@ -114,6 +114,15 @@ namespace SDRSharp.NetRemote
         {
             _cancel = true;
             _signal.Set();
+        }
+
+        private bool IsConnected(Socket socket)
+        {
+            try
+            {
+                return !(socket.Poll(1, SelectMode.SelectRead) && socket.Available == 0);
+            }
+            catch (SocketException) { return false; }
         }
 
         private void ClientAdd(Client client)
@@ -224,10 +233,15 @@ namespace SDRSharp.NetRemote
 
         private void OnTimerAlive(object source, ElapsedEventArgs e)
         {
+            List<Client> disconnected = new List<Client>();
+
             lock (lockClients)
             {
                 foreach (Client client in clients)
-                    Send(client, "\r\n");
+                    if (!IsConnected(client.socket))
+                        disconnected.Add(client);
+                foreach (Client client in disconnected)
+                    ClientRemove(client);
             }
         }
 
