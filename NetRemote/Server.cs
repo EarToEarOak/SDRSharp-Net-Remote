@@ -44,17 +44,8 @@ namespace SDRSharp.NetRemote
         private const int PORT = 3382;
         private const int MAX_CLIENTS = 4;
         private static string[] COMMANDS = { "get", "set", "exe" };
-        private static string[] METHODS = { "audiogain",
-                                            "audioismuted",
-                                            "centrefrequency",
-                                            "centerfrequency",
-                                            "frequency",
-                                            "detectortype",
-                                            "isplaying",
-                                            "sourceistunable",
-                                            "start",
-                                            "stop",
-                                            "close"};
+        private static Dictionary<string, Action<Client, bool, object>> METHODS =
+                        new Dictionary<string, Action<Client, bool, object>>();
 
         private ManualResetEvent _signal = new ManualResetEvent(false);
 
@@ -70,6 +61,22 @@ namespace SDRSharp.NetRemote
         public Server(ISharpControl control)
         {
             _control = control;
+
+            METHODS.Add("audiogain", CmdAudioGain);
+            METHODS.Add("audioismuted", CmdAudioIsMuted);
+
+            METHODS.Add("centrefrequency", CmdCentreFrequency);
+            METHODS.Add("centerfrequency", CmdCentreFrequency);
+            METHODS.Add("frequency", CmdFrequency);
+
+            METHODS.Add("detectortype", CmdDetectorType);
+            METHODS.Add("isplaying", CmdIsPlaying);
+
+            METHODS.Add("sourceistunable", CmdSourceIsTunable);
+
+            METHODS.Add("start", CmdAudioGain);
+            METHODS.Add("stop", CmdAudioGain);
+            METHODS.Add("close", CmdAudioGain);
         }
 
         public void Start()
@@ -320,7 +327,7 @@ namespace SDRSharp.NetRemote
 
                     if (method == null)
                         throw new MethodException("Method key not found");
-                    if (Array.IndexOf(METHODS, method) == -1)
+                    if (!METHODS.ContainsKey(method))
                         throw new MethodException(String.Format("Unknown method: {0}",
                             method));
 
@@ -372,86 +379,7 @@ namespace SDRSharp.NetRemote
             else
             {
                 bool set = string.Equals(command, "set");
-                switch (method)
-                {
-                    case "audiogain":
-                        if (set)
-                        {
-                            int gain = (int)CheckValue<int>(value);
-                            CheckRange(gain, 0, 40);
-                            _control.AudioGain = gain;
-                        }
-                        else
-                            Response<int>(client, "AudioGain",
-                                          _control.AudioGain);
-                        break;
-                    case "audioismuted":
-                        if (set)
-                            _control.AudioIsMuted = (bool)CheckValue<bool>(value);
-                        else
-                            Response<bool>(client, "AudioIsMuted",
-                                           _control.AudioIsMuted);
-                        break;
-                    case "centrefrequency":
-                    case "centerfrequency":
-                        if (set)
-                        {
-                            if (!_control.SourceIsTunable)
-                                throw new SourceException("Not tunable");
-                            long freq =
-                                _json.ConvertToType<long>(CheckValue<long>(value));
-                            CheckRange(freq, 1, 999999999999);
-                            _control.CenterFrequency = freq;
-                        }
-                        else
-                            Response<long>(client, "CenterFrequency",
-                                           _control.CenterFrequency);
-                        break;
-                    case "frequency":
-                        if (set)
-                        {
-                            if (!_control.SourceIsTunable)
-                                throw new SourceException("Not tunable");
-                            long freq =
-                                _json.ConvertToType<long>(CheckValue<long>(value));
-                            CheckRange(freq, 1, 999999999999);
-                            _control.Frequency = freq;
-                        }
-                        else
-                            Response<long>(client, "Frequency",
-                                           _control.Frequency);
-                        break;
-                    case "detectortype":
-                        if (set)
-                        {
-                            string det = (string)(CheckValue<string>(value));
-                            _control.DetectorType =
-                                (DetectorType)CheckEnum(det, typeof(DetectorType));
-                        }
-                        else
-                            Response<string>(client, "DetectorType",
-                                             _control.DetectorType.ToString());
-                        break;
-                    case "isplaying":
-                        if (set)
-                            throw new MethodException("Read only");
-                        else
-                            Response<bool>(client, "IsPlaying",
-                                           _control.IsPlaying);
-                        break;
-                    case "sourceistunable":
-                        if (set)
-                            throw new MethodException("Read only");
-                        else
-                            Response<bool>(client, "SourceIsTunable",
-                                           _control.SourceIsTunable);
-                        break;
-                    default:
-                        string type = set ? "Set" : "Get";
-                        string error = String.Format("Unknown {0} method: {1}",
-                                                     type, method);
-                        throw new MethodException(error);
-                }
+                METHODS[method].Invoke(client, set, value);
                 if (set)
                     Response<object>(client, null, null);
             }
@@ -490,6 +418,92 @@ namespace SDRSharp.NetRemote
         private object CheckEnum(string value, Type type)
         {
             return Enum.Parse(type, value, true);
+        }
+
+        private void CmdAudioGain(Client client, bool set, object value)
+        {
+            if (set)
+            {
+                int gain = (int)CheckValue<int>(value);
+                CheckRange(gain, 0, 40);
+                _control.AudioGain = gain;
+            }
+            else
+                Response<int>(client, "AudioGain",
+                                _control.AudioGain);
+        }
+
+
+        private void CmdAudioIsMuted(Client client, bool set, object value)
+        {
+            if (set)
+                _control.AudioIsMuted = (bool)CheckValue<bool>(value);
+            else
+                Response<bool>(client, "AudioIsMuted",
+                                _control.AudioIsMuted);
+        }
+
+        private void CmdCentreFrequency(Client client, bool set, object value)
+        {
+            if (set)
+            {
+                if (!_control.SourceIsTunable)
+                    throw new SourceException("Not tunable");
+                long freq =
+                    _json.ConvertToType<long>(CheckValue<long>(value));
+                CheckRange(freq, 1, 999999999999);
+                _control.CenterFrequency = freq;
+            }
+            else
+                Response<long>(client, "CenterFrequency",
+                                _control.CenterFrequency);
+        }
+
+        private void CmdFrequency(Client client, bool set, object value)
+        {
+            if (set)
+            {
+                if (!_control.SourceIsTunable)
+                    throw new SourceException("Not tunable");
+                long freq =
+                    _json.ConvertToType<long>(CheckValue<long>(value));
+                CheckRange(freq, 1, 999999999999);
+                _control.Frequency = freq;
+            }
+            else
+                Response<long>(client, "Frequency",
+                                _control.Frequency);
+        }
+
+        private void CmdDetectorType(Client client, bool set, object value)
+        {
+            if (set)
+            {
+                string det = (string)(CheckValue<string>(value));
+                _control.DetectorType =
+                    (DetectorType)CheckEnum(det, typeof(DetectorType));
+            }
+            else
+                Response<string>(client, "DetectorType",
+                                 _control.DetectorType.ToString());
+        }
+
+        private void CmdIsPlaying(Client client, bool set, object value)
+        {
+            if (set)
+                throw new MethodException("Read only");
+            else
+                Response<bool>(client, "IsPlaying",
+                               _control.IsPlaying);
+        }
+
+        private void CmdSourceIsTunable(Client client, bool set, object value)
+        {
+            if (set)
+                throw new MethodException("Read only");
+            else
+                Response<bool>(client, "SourceIsTunable",
+                               _control.SourceIsTunable);
         }
     }
 
