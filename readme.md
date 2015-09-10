@@ -59,11 +59,24 @@ For the *Get* and *Set* commands the method can be one of the following:
 
     AudioGain			- Volume <0-40>  
     AudioIsMuted		- Mute <true|false>
+
     CenterFrequency		- Centre displayed frequency <0-999999999999>
 	Frequency			- Tuned frequency <0-999999999999>
+
     DetectorType		- Demodulation <AM|CW|DSB|LSB|NFM|RAW|USB|WFM>
+
     IsPlaying			- Currently playing <true|false>
+
 	SourceIsTunable		- Tunable device <true|false>
+
+	SquelchEnabled		- Squelch <true|false>
+	SquelchThreshold	- Squelch level <0-100>
+
+	FmStereo			- FM stereo <true|false>
+
+	FilterType			- Filter type <0-6>
+	FilterBandwidth		- Filter bandwidth <0-250000>
+	FilterOrder			- Filter order <0-100>
 
 For the *Exe* command these methods are available:
 

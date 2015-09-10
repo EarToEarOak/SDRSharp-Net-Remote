@@ -70,9 +70,19 @@ namespace SDRSharp.NetRemote
             METHODS.Add("frequency", CmdFrequency);
 
             METHODS.Add("detectortype", CmdDetectorType);
+
             METHODS.Add("isplaying", CmdIsPlaying);
 
             METHODS.Add("sourceistunable", CmdSourceIsTunable);
+
+            METHODS.Add("squelchenabled", CmdSquelchEnabled);
+            METHODS.Add("squelchthreshold", CmdSquelchThreshold);
+
+            METHODS.Add("fmstereo", CmdFmStereo);
+
+            METHODS.Add("filtertype", CmdFilterType);
+            METHODS.Add("filterbandwidth", CmdFilterBandwidth);
+            METHODS.Add("filterorder", CmdFilterOrder);
 
             METHODS.Add("start", CmdAudioGain);
             METHODS.Add("stop", CmdAudioGain);
@@ -504,6 +514,76 @@ namespace SDRSharp.NetRemote
             else
                 Response<bool>(client, "SourceIsTunable",
                                _control.SourceIsTunable);
+        }
+
+        private void CmdSquelchEnabled(Client client, bool set, object value)
+        {
+            if (set)
+                _control.SquelchEnabled = (bool)CheckValue<bool>(value);
+            else
+                Response<bool>(client, "SquelchEnabled",
+                                _control.SquelchEnabled);
+        }
+
+        private void CmdSquelchThreshold(Client client, bool set, object value)
+        {
+            if (set)
+            {
+                int thresh = (int)CheckValue<int>(value);
+                CheckRange(thresh, 0, 100);
+                _control.SquelchThreshold = thresh;
+            }
+            else
+                Response<int>(client, "SquelchThreshold",
+                                _control.SquelchThreshold);
+        }
+
+        private void CmdFmStereo(Client client, bool set, object value)
+        {
+            if (set)
+                _control.FmStereo = (bool)CheckValue<bool>(value);
+            else
+                Response<bool>(client, "FmStereo",
+                                _control.FmStereo);
+        }
+
+        private void CmdFilterType(Client client, bool set, object value)
+        {
+            if (set)
+            {
+                int type = (int)CheckValue<int>(value);
+                CheckRange(type, 0, Enum.GetNames(typeof(WindowType)).Length - 1);
+                _control.FilterType = (WindowType)type;
+            }
+            else
+                Response<int>(client, "FilterBandwidth",
+                                _control.FilterType);
+        }
+
+        private void CmdFilterBandwidth(Client client, bool set, object value)
+        {
+            if (set)
+            {
+                int bw = (int)CheckValue<int>(value);
+                CheckRange(bw, 0, 250000);
+                _control.FilterBandwidth = bw;
+            }
+            else
+                Response<int>(client, "FilterBandwidth",
+                                _control.FilterBandwidth);
+        }
+
+        private void CmdFilterOrder(Client client, bool set, object value)
+        {
+            if (set)
+            {
+                int bw = (int)CheckValue<int>(value);
+                CheckRange(bw, 0, 100);
+                _control.FilterOrder = bw;
+            }
+            else
+                Response<int>(client, "FilterOrder",
+                                _control.FilterOrder);
         }
     }
 
