@@ -38,6 +38,7 @@ namespace SDRSharp.NetRemote
         private ISharpControl _control;
 
         private Thread _threadServer;
+        private Parser _parser;
         private Server _server = null;
         private bool _isEnabled;
 
@@ -45,6 +46,7 @@ namespace SDRSharp.NetRemote
         {
             InitializeComponent();
 
+            _parser = new Parser(control);
             _control = control;
 
             if (!Utils.GetBooleanSetting(_settingNotFirstRun))
@@ -70,7 +72,7 @@ namespace SDRSharp.NetRemote
             {
                 if (_threadServer == null)
                 {
-                    _server = new Server(_control);
+                    _server = new Server(_parser);
                     _threadServer = new Thread(new ThreadStart(_server.Start));
                     _threadServer.Start();
                 }

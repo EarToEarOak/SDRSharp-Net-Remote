@@ -54,9 +54,9 @@ namespace SDRSharp.NetRemote
         private byte[] warnMaxClients = Encoding.ASCII.GetBytes(
             "Too many connections");
 
-        public Server(ISharpControl control)
+        public Server(Parser parser)
         {
-            _parser = new Parser(control);
+            _parser = parser;
         }
 
         public void Start()
