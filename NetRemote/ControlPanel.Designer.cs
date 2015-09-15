@@ -45,53 +45,88 @@ namespace SDRSharp.NetRemote
         /// </summary>
         private void InitializeComponent()
         {
-            this.checkEnable = new System.Windows.Forms.CheckBox();
+            this.checkNetwork = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.checkSerial = new System.Windows.Forms.CheckBox();
+            this.comboSerial = new System.Windows.Forms.ComboBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // checkEnable
+            // checkNetwork
             // 
-            this.checkEnable.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.checkEnable.AutoSize = true;
-            this.checkEnable.Checked = true;
-            this.checkEnable.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkEnable.Location = new System.Drawing.Point(3, 15);
-            this.checkEnable.Name = "checkEnable";
-            this.checkEnable.Size = new System.Drawing.Size(59, 17);
-            this.checkEnable.TabIndex = 0;
-            this.checkEnable.Text = "Enable";
-            this.checkEnable.UseVisualStyleBackColor = true;
-            this.checkEnable.CheckedChanged += new System.EventHandler(this.CheckChangedEnable);
+            this.checkNetwork.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.checkNetwork.AutoSize = true;
+            this.checkNetwork.Checked = true;
+            this.checkNetwork.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkNetwork.Location = new System.Drawing.Point(3, 7);
+            this.checkNetwork.Name = "checkNetwork";
+            this.checkNetwork.Size = new System.Drawing.Size(66, 17);
+            this.checkNetwork.TabIndex = 0;
+            this.checkNetwork.Text = "Network";
+            this.checkNetwork.UseVisualStyleBackColor = true;
+            this.checkNetwork.CheckedChanged += new System.EventHandler(this.CheckChangedNetwork);
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.AutoSize = true;
+            this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tableLayoutPanel1.ColumnCount = 2;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.checkEnable, 0, 0);
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Controls.Add(this.checkNetwork, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.checkSerial, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.comboSerial, 1, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 1;
+            this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(204, 48);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(226, 63);
             this.tableLayoutPanel1.TabIndex = 1;
+            // 
+            // checkSerial
+            // 
+            this.checkSerial.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.checkSerial.AutoSize = true;
+            this.checkSerial.Checked = true;
+            this.checkSerial.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkSerial.Location = new System.Drawing.Point(3, 38);
+            this.checkSerial.Name = "checkSerial";
+            this.checkSerial.Size = new System.Drawing.Size(52, 17);
+            this.checkSerial.TabIndex = 1;
+            this.checkSerial.Text = "Serial";
+            this.checkSerial.UseVisualStyleBackColor = true;
+            this.checkSerial.CheckedChanged += new System.EventHandler(this.CheckChangedSerial);
+            // 
+            // comboSerial
+            // 
+            this.comboSerial.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.comboSerial.FormattingEnabled = true;
+            this.comboSerial.Location = new System.Drawing.Point(116, 36);
+            this.comboSerial.Name = "comboSerial";
+            this.comboSerial.Size = new System.Drawing.Size(97, 21);
+            this.comboSerial.TabIndex = 2;
             // 
             // ControlPanel
             // 
+            this.AutoSize = true;
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "ControlPanel";
-            this.Size = new System.Drawing.Size(204, 48);
+            this.Size = new System.Drawing.Size(226, 63);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.CheckBox checkEnable;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.CheckBox checkNetwork;
+        private System.Windows.Forms.CheckBox checkSerial;
+        private System.Windows.Forms.ComboBox comboSerial;
 
 
 

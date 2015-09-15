@@ -33,14 +33,17 @@ namespace SDRSharp.NetRemote
     public partial class ControlPanel : UserControl
     {
         private const string _settingNotFirstRun = "netRemoteNotFirstRun";
-        private const string _settingEnabled = "netRemoteEnable";
+        private const string _settingServerEn = "netRemoteServerEnable";
+        private const string _settingSerialEn = "netRemoteSerialEnable";
+        private const string _settingSerialPort = "netRemoteSerialPort";
 
         private ISharpControl _control;
 
         private Thread _threadServer;
+        private Thread _threadSerial;
         private Parser _parser;
         private Server _server = null;
-        private bool _isEnabled;
+        private Serial _serial = null;
 
         public ControlPanel(ISharpControl control)
         {
@@ -50,25 +53,41 @@ namespace SDRSharp.NetRemote
             _control = control;
 
             if (!Utils.GetBooleanSetting(_settingNotFirstRun))
-                _isEnabled = true;
+            {
+                checkNetwork.Checked = true;
+                checkSerial.Checked = true;
+            }
             else
-                _isEnabled = Utils.GetBooleanSetting(_settingEnabled);
+            {
+                checkNetwork.Checked = Utils.GetBooleanSetting(_settingServerEn);
+                checkSerial.Checked = Utils.GetBooleanSetting(_settingSerialEn);
+            }
+
+            comboSerial.Enabled = !checkSerial.Checked;
+            comboSerial.Items.AddRange(Serial.GetPorts());
+            comboSerial.SelectedIndex = 0;
+            comboSerial.SelectedItem = Utils.GetStringSetting(_settingSerialPort, "");
 
             ServerControl();
-            checkEnable.Checked = _isEnabled;
+            SerialControl();
         }
 
         public void Close()
         {
             Utils.SaveSetting(_settingNotFirstRun, true);
-            Utils.SaveSetting(_settingEnabled, _isEnabled);
-            _isEnabled = false;
+            Utils.SaveSetting(_settingServerEn, checkNetwork.Checked);
+            Utils.SaveSetting(_settingSerialEn, checkSerial.Checked);
+            Utils.SaveSetting(_settingSerialPort, comboSerial.SelectedItem);
+
+            checkNetwork.Checked = false;
+            checkSerial.Checked = false;
             ServerControl();
+            SerialControl();
         }
 
         private void ServerControl()
         {
-            if (_isEnabled)
+            if (checkNetwork.Checked)
             {
                 if (_threadServer == null)
                 {
@@ -88,10 +107,37 @@ namespace SDRSharp.NetRemote
             }
         }
 
-        private void CheckChangedEnable(object sender, EventArgs e)
+        private void SerialControl()
         {
-            _isEnabled = checkEnable.Checked;
+            if (checkSerial.Checked)
+            {
+                if (_threadSerial == null)
+                {
+                    _serial = new Serial(_parser, comboSerial.SelectedItem.ToString());
+                    _threadSerial = new Thread(new ThreadStart(_serial.Start));
+                    _threadSerial.Start();
+                }
+            }
+            else
+            {
+                if (_threadSerial != null)
+                {
+                    _serial.Stop();
+                    _threadSerial.Join(1000);
+                    _threadSerial = null;
+                }
+            }
+        }
+
+        private void CheckChangedNetwork(object sender, EventArgs e)
+        {
             ServerControl();
+        }
+
+        private void CheckChangedSerial(object sender, EventArgs e)
+        {
+            comboSerial.Enabled = !checkSerial.Checked;
+            SerialControl();
         }
     }
 }

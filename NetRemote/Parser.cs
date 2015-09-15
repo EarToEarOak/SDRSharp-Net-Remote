@@ -36,8 +36,8 @@ namespace SDRSharp.NetRemote
     class Parser
     {
         private static string[] COMMANDS = { "get", "set", "exe" };
-        private static Dictionary<string, Func<Client, bool, object, string>> METHODS =
-                        new Dictionary<string, Func<Client, bool, object, string>>();
+        private static Dictionary<string, Func<bool, object, string>> METHODS =
+                        new Dictionary<string, Func<bool, object, string>>();
 
         private ISharpControl _control;
         private JavaScriptSerializer _json = new JavaScriptSerializer();
@@ -74,12 +74,11 @@ namespace SDRSharp.NetRemote
             METHODS.Add("close", CmdAudioGain);
         }
 
-        public string Parse(Client client)
+        public string Parse(string data)
         {
-
             string result;
-            string data = Regex.Replace(client.data.ToString(),
-                                        @"[^\u0020-\u007F]", string.Empty);
+
+            data = Regex.Replace(data, @"[^\u0020-\u007F]", string.Empty);
             data = data.ToLower();
 
             try
@@ -120,7 +119,7 @@ namespace SDRSharp.NetRemote
                     if (string.Equals(command, "set") && value == null)
                         throw new ValueException("Value missing");
 
-                    result = Command(client, command, method, value);
+                    result = Command(command, method, value);
                 }
                 else
                     result = null;
@@ -128,27 +127,23 @@ namespace SDRSharp.NetRemote
             catch (Exception ex)
             {
                 if (ex is ArgumentException || ex is InvalidOperationException)
-                    result = Error(client, "Syntax error", data);
+                    result = Error("Syntax error", data);
                 else if (ex is CommandException)
-                    result = Error(client, "Command error", ex.Message);
+                    result = Error("Command error", ex.Message);
                 else if (ex is MethodException)
-                    result = Error(client, "Method error", ex.Message);
+                    result = Error("Method error", ex.Message);
                 else if (ex is ValueException)
-                    result = Error(client, "Value error", ex.Message);
+                    result = Error("Value error", ex.Message);
                 else if (ex is SourceException)
-                    result = Error(client, "Source error", ex.Message);
+                    result = Error("Source error", ex.Message);
                 else
                     throw;
-            }
-            finally
-            {
-                client.data.Length = 0;
             }
 
             return result;
         }
 
-        private string Command(Client client, string command, string method, object value)
+        private string Command(string command, string method, object value)
         {
             string result;
 
@@ -168,12 +163,12 @@ namespace SDRSharp.NetRemote
                         throw new MethodException(String.Format("Unknown Exe method: {0}",
                                                   method));
                 }
-                result = Response<object>(client, null, null);
+                result = Response<object>(null, null);
             }
             else
             {
                 bool set = string.Equals(command, "set");
-                result = METHODS[method].Invoke(client, set, value);
+                result = METHODS[method].Invoke(set, value);
             }
 
             return result;
@@ -214,7 +209,7 @@ namespace SDRSharp.NetRemote
             return Enum.Parse(type, value, true);
         }
 
-        private string CmdAudioGain(Client client, bool set, object value)
+        private string CmdAudioGain(bool set, object value)
         {
             string result;
 
@@ -223,33 +218,32 @@ namespace SDRSharp.NetRemote
                 int gain = (int)CheckValue<int>(value);
                 CheckRange(gain, 0, 40);
                 _control.AudioGain = gain;
-                result = Response<object>(client, null, null);
+                result = Response<object>(null, null);
             }
             else
-                result = Response<int>(client, "AudioGain",
-                                _control.AudioGain);
+                result = Response<int>("AudioGain", _control.AudioGain);
 
             return result;
         }
 
 
-        private string CmdAudioIsMuted(Client client, bool set, object value)
+        private string CmdAudioIsMuted(bool set, object value)
         {
             string result;
 
             if (set)
             {
                 _control.AudioIsMuted = (bool)CheckValue<bool>(value);
-                result = Response<object>(client, null, null);
+                result = Response<object>( null, null);
             }
             else
-                result = Response<bool>(client, "AudioIsMuted",
+                result = Response<bool>("AudioIsMuted",
                                 _control.AudioIsMuted);
 
             return result;
         }
 
-        private string CmdCentreFrequency(Client client, bool set, object value)
+        private string CmdCentreFrequency(bool set, object value)
         {
             string result;
 
@@ -261,16 +255,16 @@ namespace SDRSharp.NetRemote
                     _json.ConvertToType<long>(CheckValue<long>(value));
                 CheckRange(freq, 1, 999999999999);
                 _control.CenterFrequency = freq;
-                result = Response<object>(client, null, null);
+                result = Response<object>(null, null);
             }
             else
-                result = Response<long>(client, "CenterFrequency",
+                result = Response<long>("CenterFrequency",
                                 _control.CenterFrequency);
 
             return result;
         }
 
-        private string CmdFrequency(Client client, bool set, object value)
+        private string CmdFrequency(bool set, object value)
         {
             string result;
 
@@ -282,16 +276,15 @@ namespace SDRSharp.NetRemote
                     _json.ConvertToType<long>(CheckValue<long>(value));
                 CheckRange(freq, 1, 999999999999);
                 _control.Frequency = freq;
-                result = Response<object>(client, null, null);
+                result = Response<object>(null, null);
             }
             else
-                result = Response<long>(client, "Frequency",
-                                _control.Frequency);
+                result = Response<long>("Frequency", _control.Frequency);
 
             return result;
         }
 
-        private string CmdDetectorType(Client client, bool set, object value)
+        private string CmdDetectorType(bool set, object value)
         {
             string result;
 
@@ -300,58 +293,57 @@ namespace SDRSharp.NetRemote
                 string det = (string)(CheckValue<string>(value));
                 _control.DetectorType =
                     (DetectorType)CheckEnum(det, typeof(DetectorType));
-                result = Response<object>(client, null, null);
+                result = Response<object>(null, null);
             }
             else
-                result = Response<string>(client, "DetectorType",
+                result = Response<string>("DetectorType",
                                  _control.DetectorType.ToString());
 
             return result;
         }
 
-        private string CmdIsPlaying(Client client, bool set, object value)
+        private string CmdIsPlaying(bool set, object value)
         {
             string result;
 
             if (set)
                 throw new MethodException("Read only");
             else
-                result = Response<bool>(client, "IsPlaying",
-                               _control.IsPlaying);
+                result = Response<bool>("IsPlaying", _control.IsPlaying);
 
             return result;
         }
 
-        private string CmdSourceIsTunable(Client client, bool set, object value)
+        private string CmdSourceIsTunable(bool set, object value)
         {
             string result;
 
             if (set)
                 throw new MethodException("Read only");
             else
-                result = Response<bool>(client, "SourceIsTunable",
-                               _control.SourceIsTunable);
+                result = Response<bool>("SourceIsTunable",
+                    _control.SourceIsTunable);
 
             return result;
         }
 
-        private string CmdSquelchEnabled(Client client, bool set, object value)
+        private string CmdSquelchEnabled(bool set, object value)
         {
             string result;
 
             if (set)
             {
                 _control.SquelchEnabled = (bool)CheckValue<bool>(value);
-                result = Response<object>(client, null, null);
+                result = Response<object>(null, null);
             }
             else
-                result = Response<bool>(client, "SquelchEnabled",
-                                _control.SquelchEnabled);
+                result = Response<bool>("SquelchEnabled",
+                    _control.SquelchEnabled);
 
             return result;
         }
 
-        private string CmdSquelchThreshold(Client client, bool set, object value)
+        private string CmdSquelchThreshold(bool set, object value)
         {
             string result;
 
@@ -360,32 +352,31 @@ namespace SDRSharp.NetRemote
                 int thresh = (int)CheckValue<int>(value);
                 CheckRange(thresh, 0, 100);
                 _control.SquelchThreshold = thresh;
-                result = Response<object>(client, null, null);
+                result = Response<object>(null, null);
             }
             else
-                result = Response<int>(client, "SquelchThreshold",
-                                _control.SquelchThreshold);
+                result = Response<int>("SquelchThreshold",
+                    _control.SquelchThreshold);
 
             return result;
         }
 
-        private string CmdFmStereo(Client client, bool set, object value)
+        private string CmdFmStereo( bool set, object value)
         {
             string result;
 
             if (set)
             {
                 _control.FmStereo = (bool)CheckValue<bool>(value);
-                result = Response<object>(client, null, null);
+                result = Response<object>(null, null);
             }
             else
-                result = Response<bool>(client, "FmStereo",
-                                _control.FmStereo);
+                result = Response<bool>("FmStereo", _control.FmStereo);
 
             return result;
         }
 
-        private string CmdFilterType(Client client, bool set, object value)
+        private string CmdFilterType(bool set, object value)
         {
             string result;
 
@@ -394,16 +385,15 @@ namespace SDRSharp.NetRemote
                 int type = (int)CheckValue<int>(value);
                 CheckRange(type, 0, Enum.GetNames(typeof(WindowType)).Length - 1);
                 _control.FilterType = (WindowType)type;
-                result = Response<object>(client, null, null);
+                result = Response<object>(null, null);
             }
             else
-                result = Response<int>(client, "FilterBandwidth",
-                                _control.FilterType);
+                result = Response<int>("FilterBandwidth", _control.FilterType);
 
             return result;
         }
 
-        private string CmdFilterBandwidth(Client client, bool set, object value)
+        private string CmdFilterBandwidth(bool set, object value)
         {
             string result;
 
@@ -412,16 +402,16 @@ namespace SDRSharp.NetRemote
                 int bw = (int)CheckValue<int>(value);
                 CheckRange(bw, 0, 250000);
                 _control.FilterBandwidth = bw;
-                result = Response<object>(client, null, null);
+                result = Response<object>(null, null);
             }
             else
-                result = Response<int>(client, "FilterBandwidth",
+                result = Response<int>("FilterBandwidth",
                                 _control.FilterBandwidth);
 
             return result;
         }
 
-        private string CmdFilterOrder(Client client, bool set, object value)
+        private string CmdFilterOrder(bool set, object value)
         {
             string result;
 
@@ -430,16 +420,16 @@ namespace SDRSharp.NetRemote
                 int bw = (int)CheckValue<int>(value);
                 CheckRange(bw, 0, 100);
                 _control.FilterOrder = bw;
-                result = Response<object>(client, null, null);
+                result = Response<object>(null, null);
             }
             else
-                result = Response<int>(client, "FilterOrder",
+                result = Response<int>("FilterOrder",
                                 _control.FilterOrder);
 
             return result;
         }
 
-        public string Motd(Client client)
+        public string Motd()
         {
             Dictionary<string, string> version = new Dictionary<string, string>
             {
@@ -450,7 +440,7 @@ namespace SDRSharp.NetRemote
             return _json.Serialize(version) + "\r\n";
         }
 
-        private string Error(Client client, string type, string message)
+        private string Error(string type, string message)
         {
             Dictionary<string, string> version = new Dictionary<string, string>
             {
@@ -462,7 +452,7 @@ namespace SDRSharp.NetRemote
             return  _json.Serialize(version) + "\r\n";
         }
 
-        private string Response<T>(Client client, string key, object value)
+        private string Response<T>(string key, object value)
         {
             Dictionary<string, object> resp = new Dictionary<string, object>
             {

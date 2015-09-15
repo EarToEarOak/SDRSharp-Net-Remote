@@ -117,7 +117,7 @@ namespace SDRSharp.NetRemote
             lock (lockClients)
                 clients.Add(client);
 
-            Send(client, _parser.Motd(client));
+            Send(client, _parser.Motd());
             try
             {
                 client.socket.BeginReceive(client.buffer, 0, Client.BUFFER_SIZE, 0,
@@ -174,17 +174,18 @@ namespace SDRSharp.NetRemote
                     client.data.Append(Encoding.ASCII.GetString(client.buffer,
                                                                 0, read));
                     data = client.data.ToString();
-                    if (data.IndexOf("\n") > -1)
+                    if (data.IndexOf("\n") > -1 || data.IndexOf("\r") > -1)
                     {
                         try
                         {
-                            result = _parser.Parse(client);
+                            result = _parser.Parse(client.data.ToString());
                             Send(client, result);
                         }
                         catch (CommandException)
                         {
                             ClientRemove(client);
                         }
+                        client.data.Length = 0;
                     }
 
                     client.socket.BeginReceive(client.buffer, 0,
