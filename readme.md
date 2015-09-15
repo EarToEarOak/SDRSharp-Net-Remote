@@ -5,7 +5,7 @@ Copyright 2014 - 2015 Al Brown
 al [at] eartoearoak.com
 
 
-A network remote control plugin for SDRSharp.
+A network and serial remote control plugin for SDRSharp.
 
 More details can be found [here](http://eartoearoak.com/software/sdrsharp-net-remote).
 
@@ -28,6 +28,8 @@ Run:
 You should get a JSON response showing the plugin name and version, for example:
 
     {"Name":"Net Remote","Version":"1.0.5282.28765"}
+
+Commands will also be read from the serial port set in the control panel, currently the port defaults to 115200 8N1.
 
 ## Commands ##
 Commands are JSON formatted strings containing a *Command*, *Method* and  optional *Value* attributes. For example to set the current volume to 30:
