@@ -33,6 +33,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Timers;
 using System.Web.Script.Serialization;
+using System.Windows.Forms;
 
 namespace SDRSharp.NetRemote
 {
@@ -83,10 +84,13 @@ namespace SDRSharp.NetRemote
                     _signal.WaitOne();
                 }
             }
-            catch (SocketException)
+            catch (SocketException ex)
             {
                 if (socket.IsBound)
                     socket.Shutdown(SocketShutdown.Both);
+
+                MessageBox.Show(ex.Message, Info.Title(),
+                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {

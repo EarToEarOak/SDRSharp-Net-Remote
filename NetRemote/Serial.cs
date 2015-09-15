@@ -29,6 +29,7 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace SDRSharp.NetRemote
 {
@@ -62,12 +63,14 @@ namespace SDRSharp.NetRemote
             {
                 port.Open();
             }
-            catch (IOException) {
-
+            catch (IOException ex) {
+                MessageBox.Show(ex.Message, Info.Title(),
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            catch (UnauthorizedAccessException)
+            catch (UnauthorizedAccessException ex)
             {
-
+                MessageBox.Show(ex.Message, Info.Title(),
+                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             Send(port, _parser.Motd());
