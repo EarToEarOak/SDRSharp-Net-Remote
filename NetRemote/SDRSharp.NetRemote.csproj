@@ -94,6 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="misc.cs" />
+    <Compile Include="Parser.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="ControlPanel.cs">
       <SubType>UserControl</SubType>
