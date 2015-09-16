@@ -101,9 +101,10 @@ An *Error* is returned if a problem occurred, e.g.:
 
 	{"Result":"Error","Type":"Value error","Message":"Value missing"}
 
+## Physical Controls ##
+You can use this to interface real-world controls such as buttons and rotary encoders to SDR#, a [basic tutorial](http://eartoearoak.com/tutorials-and-examples/sdrsharp-physical-controls) is available.
 
 ## License ##
-
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
