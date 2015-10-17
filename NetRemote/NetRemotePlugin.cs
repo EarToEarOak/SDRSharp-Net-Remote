@@ -42,7 +42,7 @@ namespace SDRSharp.NetRemote
             get { return true; }
         }
 
-        public UserControl GuiControl
+        public UserControl Gui
         {
             get { return _controlPanel; }
         }
