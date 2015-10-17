@@ -2,7 +2,7 @@
 ;
 ; http://eartoearoak.com/software/sdrsharp-net-remote
 ;
-; Copyright 2014 Al Brown
+; Copyright 2014 - 2015 Al Brown
 ;
 ; A network remote control plugin for SDRSharp
 ;
