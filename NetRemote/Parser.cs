@@ -216,7 +216,7 @@ namespace SDRSharp.NetRemote
             if (set)
             {
                 int gain = (int)CheckValue<int>(value);
-                CheckRange(gain, 0, 40);
+                CheckRange(gain, 25, 60);
                 _control.AudioGain = gain;
                 result = Response<object>(null, null);
             }
@@ -383,7 +383,7 @@ namespace SDRSharp.NetRemote
             if (set)
             {
                 int type = (int)CheckValue<int>(value);
-                CheckRange(type, 0, Enum.GetNames(typeof(WindowType)).Length - 1);
+                CheckRange(type, 1, Enum.GetNames(typeof(WindowType)).Length);
                 _control.FilterType = (WindowType)type;
                 result = Response<object>(null, null);
             }

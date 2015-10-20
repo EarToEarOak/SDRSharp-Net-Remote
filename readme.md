@@ -59,7 +59,7 @@ The value attribute only used with the Set command.
 ### Method Attribute ###
 For the *Get* and *Set* commands the method can be one of the following:
 
-    AudioGain			- Volume <0-40>  
+    AudioGain			- Volume <25-60>  
     AudioIsMuted		- Mute <true|false>
 
     CenterFrequency		- Centre displayed frequency <0-999999999999>
@@ -76,7 +76,7 @@ For the *Get* and *Set* commands the method can be one of the following:
 
 	FmStereo			- FM stereo <true|false>
 
-	FilterType			- Filter type <0-6>
+	FilterType			- Filter type <1-6>
 	FilterBandwidth		- Filter bandwidth <0-250000>
 	FilterOrder			- Filter order <0-100>
 
