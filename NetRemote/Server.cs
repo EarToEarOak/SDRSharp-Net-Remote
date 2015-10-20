@@ -189,6 +189,10 @@ namespace SDRSharp.NetRemote
                         {
                             ClientRemove(client);
                         }
+                        catch (ClientException)
+                        {
+                            ClientRemove(client);
+                        }
                         client.data.Length = 0;
                     }
 

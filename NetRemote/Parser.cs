@@ -206,7 +206,16 @@ namespace SDRSharp.NetRemote
 
         private object CheckEnum(string value, Type type)
         {
-            return Enum.Parse(type, value, true);
+            try
+            {
+                return Enum.Parse(type, value, true);
+            }
+            catch (ArgumentException)
+            {
+                string error = "Expected one of ";
+                error += String.Join(", ", Enum.GetNames(type));
+                throw new ValueException(error);
+            }
         }
 
         private string CmdAudioGain(bool set, object value)
