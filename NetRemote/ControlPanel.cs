@@ -63,10 +63,20 @@ namespace SDRSharp.NetRemote
                 checkSerial.Checked = Utils.GetBooleanSetting(_settingSerialEn);
             }
 
-            comboSerial.Enabled = !checkSerial.Checked;
-            comboSerial.Items.AddRange(Serial.GetPorts());
-            comboSerial.SelectedIndex = 0;
-            comboSerial.SelectedItem = Utils.GetStringSetting(_settingSerialPort, "");
+            string[] ports = Serial.GetPorts();
+            if (ports.Length > 0)
+            {
+                comboSerial.Enabled = !checkSerial.Checked;
+                comboSerial.Items.AddRange(Serial.GetPorts());
+                comboSerial.SelectedIndex = 0;
+                comboSerial.SelectedItem = Utils.GetStringSetting(_settingSerialPort, "");
+            }
+            else
+            {
+                checkSerial.Checked = false;
+                checkSerial.Enabled = false;
+                comboSerial.Enabled = false;
+            }
 
             ServerControl();
             SerialControl();
