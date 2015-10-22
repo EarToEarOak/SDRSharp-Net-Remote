@@ -35,6 +35,8 @@ namespace SDRSharp.NetRemote
 {
     class Serial
     {
+        public event EventHandler SerialError;
+
         private Parser _parser;
         private string _data;
         private string _port;
@@ -63,14 +65,23 @@ namespace SDRSharp.NetRemote
             {
                 port.Open();
             }
-            catch (IOException ex) {
-                MessageBox.Show(ex.Message, Info.Title(),
+            catch (IOException ex)
+            {
+                OnSerialError();
+                string msg = "Serial Port Error:\n" + ex.Message;
+                MessageBox.Show(msg, Info.Title() + "Serial Port Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Close(port);
+                return;
             }
             catch (UnauthorizedAccessException ex)
             {
-                MessageBox.Show(ex.Message, Info.Title(),
+                OnSerialError();
+                string msg = "Serial Port Error:\n" + ex.Message;
+                MessageBox.Show(msg, Info.Title() + "Serial Port Error",
                      MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Close(port);
+                return;
             }
 
             Send(port, _parser.Motd());
@@ -78,7 +89,7 @@ namespace SDRSharp.NetRemote
             _signal.Reset();
             _signal.WaitOne();
 
-            port.Close();
+            Close(port);
         }
 
         public void Stop()
@@ -110,6 +121,27 @@ namespace SDRSharp.NetRemote
                 }
 
                 _data = "";
+            }
+        }
+
+        private void Close(SerialPort port)
+        {
+            try
+            {
+                port.Close();
+            }
+            catch (IOException)
+            {
+            }
+
+        }
+
+        protected virtual void OnSerialError()
+        {
+            EventHandler handler = SerialError;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
             }
         }
     }

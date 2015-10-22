@@ -124,6 +124,7 @@ namespace SDRSharp.NetRemote
                 if (_threadSerial == null)
                 {
                     _serial = new Serial(_parser, comboSerial.SelectedItem.ToString());
+                    _serial.SerialError += OnSerialError;
                     _threadSerial = new Thread(new ThreadStart(_serial.Start));
                     _threadSerial.Start();
                 }
@@ -148,6 +149,12 @@ namespace SDRSharp.NetRemote
         {
             comboSerial.Enabled = !checkSerial.Checked;
             SerialControl();
+        }
+
+        private void OnSerialError(object sender, EventArgs e)
+        {
+            _threadSerial = null;
+            checkSerial.Checked = false;
         }
     }
 }
