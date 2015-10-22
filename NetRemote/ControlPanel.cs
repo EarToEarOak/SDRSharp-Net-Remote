@@ -102,6 +102,7 @@ namespace SDRSharp.NetRemote
                 if (_threadServer == null)
                 {
                     _server = new Server(_parser);
+                    _server.ServerError += OnServerError;
                     _threadServer = new Thread(new ThreadStart(_server.Start));
                     _threadServer.Start();
                 }
@@ -155,6 +156,12 @@ namespace SDRSharp.NetRemote
         {
             _threadSerial = null;
             checkSerial.Checked = false;
+        }
+
+        private void OnServerError(object sender, EventArgs e)
+        {
+            _threadServer = null;
+            checkNetwork.Checked = false;
         }
     }
 }

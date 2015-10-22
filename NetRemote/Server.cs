@@ -42,6 +42,8 @@ namespace SDRSharp.NetRemote
 
     class Server
     {
+        public event EventHandler ServerError;
+
         private const int PORT = 3382;
         private const int MAX_CLIENTS = 4;
 
@@ -86,10 +88,13 @@ namespace SDRSharp.NetRemote
             }
             catch (SocketException ex)
             {
+                OnServerError();
+
                 if (socket.IsBound)
                     socket.Shutdown(SocketShutdown.Both);
 
-                MessageBox.Show(ex.Message, Info.Title(),
+                string msg = "Network Error:\n" + ex.Message;
+                MessageBox.Show(msg, Info.Title(),
                      MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
@@ -249,6 +254,15 @@ namespace SDRSharp.NetRemote
                         disconnected.Add(client);
                 foreach (Client client in disconnected)
                     ClientRemove(client);
+            }
+        }
+
+        protected virtual void OnServerError()
+        {
+            EventHandler handler = ServerError;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
             }
         }
     }
