@@ -409,7 +409,7 @@ namespace SDRSharp.NetRemote
             if (set)
             {
                 int bw = (int)CheckValue<int>(value);
-                CheckRange(bw, 0, 250000);
+                CheckRange(bw, 10, 250000);
                 _control.FilterBandwidth = bw;
                 result = Response<object>(null, null);
             }
@@ -427,7 +427,7 @@ namespace SDRSharp.NetRemote
             if (set)
             {
                 int bw = (int)CheckValue<int>(value);
-                CheckRange(bw, 0, 100);
+                CheckRange(bw, 10, 9999);
                 _control.FilterOrder = bw;
                 result = Response<object>(null, null);
             }

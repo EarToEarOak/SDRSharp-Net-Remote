@@ -77,8 +77,8 @@ For the *Get* and *Set* commands the method can be one of the following:
 	FmStereo			- FM stereo <true|false>
 
 	FilterType			- Filter type <1-6>
-	FilterBandwidth		- Filter bandwidth <0-250000>
-	FilterOrder			- Filter order <0-100>
+	FilterBandwidth		- Filter bandwidth <10-250000>
+	FilterOrder			- Filter order <10-9999>
 
 For the *Exe* command these methods are available:
 
