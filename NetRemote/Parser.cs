@@ -126,7 +126,10 @@ namespace SDRSharp.NetRemote
             }
             catch (Exception ex)
             {
-                if (ex is ArgumentException || ex is InvalidOperationException)
+                if (ex is ArgumentOutOfRangeException)
+                    result = Error("Set error", "Could not set value");
+                else if (ex is ArgumentException ||
+                    ex is InvalidOperationException)
                     result = Error("Syntax error", data);
                 else if (ex is CommandException)
                     result = Error("Command error", ex.Message);
