@@ -133,7 +133,7 @@ namespace SDRSharp.NetRemote
                                            new AsyncCallback(ReadCallback),
                                            client);
             }
-            catch (SocketException)
+            catch (Exception)
             {
                 ClientRemove(client);
             }
@@ -143,8 +143,14 @@ namespace SDRSharp.NetRemote
         {
             lock (lockClients)
                 clients.Remove(client);
-            client.socket.Shutdown(SocketShutdown.Both);
-            client.socket.Close();
+
+            try
+            {
+                client.socket.Shutdown(SocketShutdown.Both);
+                client.socket.Close();
+            }
+            catch (SocketException) { }
+            catch (ObjectDisposedException) { }
         }
 
         private void ConnectCallback(IAsyncResult ar)
@@ -207,12 +213,9 @@ namespace SDRSharp.NetRemote
                                                 client);
                 }
             }
-            catch (SocketException)
+            catch (Exception)
             {
                 ClientRemove(client);
-            }
-            catch (ObjectDisposedException)
-            {
             }
         }
 
@@ -224,7 +227,7 @@ namespace SDRSharp.NetRemote
                 client.socket.BeginSend(byteData, 0, byteData.Length, 0,
                                         new AsyncCallback(SendCallback), client);
             }
-            catch (SocketException)
+            catch (Exception)
             {
                 ClientRemove(client);
             }
@@ -237,7 +240,7 @@ namespace SDRSharp.NetRemote
             {
                 client.socket.EndSend(ar);
             }
-            catch (SocketException)
+            catch (Exception)
             {
                 ClientRemove(client);
             }
