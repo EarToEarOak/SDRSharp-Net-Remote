@@ -189,7 +189,7 @@ namespace SDRSharp.NetRemote
                     client.data.Append(Encoding.ASCII.GetString(client.buffer,
                                                                 0, read));
                     data = client.data.ToString();
-                    if (data.IndexOf("\n") > -1 || data.IndexOf("\r") > -1)
+                    if (data.Split('{').Length == data.Split('}').Length)
                     {
                         try
                         {

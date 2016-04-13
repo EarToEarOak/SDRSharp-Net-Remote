@@ -109,7 +109,7 @@ namespace SDRSharp.NetRemote
             string result;
 
             _data += port.ReadExisting();
-            if (_data.IndexOf("\n") > -1 || _data.IndexOf("\r") > -1)
+            if (_data.Split('{').Length == _data.Split('}').Length)
             {
                 try
                 {
