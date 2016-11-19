@@ -221,6 +221,9 @@ namespace SDRSharp.NetRemote
 
         private void Send(Client client, String data)
         {
+            if (data == null)
+                return;
+
             var byteData = Encoding.ASCII.GetBytes(data);
             try
             {
