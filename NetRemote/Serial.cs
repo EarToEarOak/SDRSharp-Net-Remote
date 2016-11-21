@@ -99,7 +99,7 @@ namespace SDRSharp.NetRemote
 
         private void Send(SerialPort port, String data)
         {
-            if (port.IsOpen)
+            if (port.IsOpen && data != null)
                 port.Write(data);
         }
 
