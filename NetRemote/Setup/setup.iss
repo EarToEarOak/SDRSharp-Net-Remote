@@ -2,7 +2,7 @@
 ;
 ; http://eartoearoak.com/software/sdrsharp-net-remote
 ;
-; Copyright 2014 - 2015 Al Brown
+; Copyright 2014 - 2017 Al Brown
 ;
 ; A network remote control plugin for SDRSharp
 ;
@@ -36,6 +36,7 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultGroupName={#MyAppName}
 DefaultDirName={pf}\SDRSharp
+AlwaysShowDirOnReadyPage=yes
 LicenseFile=license.txt
 InfoBeforeFile=help.txt
 OutputBaseFilename=setup
