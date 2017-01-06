@@ -47,6 +47,7 @@ DirExistsWarning=no
 DisableProgramGroupPage=auto
 MinVersion=0,5.01sp3
 AppendDefaultDirName=False
+UsePreviousAppDir=False
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
