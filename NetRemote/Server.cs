@@ -3,7 +3,7 @@
 
  http://eartoearoak.com/software/sdrsharp-net-remote
 
- Copyright 2014 - 2015 Al Brown
+ Copyright 2014 - 2017 Al Brown
 
  A network remote control plugin for SDRSharp
 
@@ -44,7 +44,6 @@ namespace SDRSharp.NetRemote
     {
         public event EventHandler ServerError;
 
-        private const int PORT = 3382;
         private const int MAX_CLIENTS = 4;
 
         private ManualResetEvent _signal = new ManualResetEvent(false);
@@ -53,18 +52,20 @@ namespace SDRSharp.NetRemote
         private List<Client> clients = new List<Client>();
         private volatile bool _cancel = false;
         private Parser _parser;
+        private int _port;
 
         private byte[] warnMaxClients = Encoding.ASCII.GetBytes(
             "Too many connections");
 
-        public Server(Parser parser)
+        public Server(Parser parser, int port)
         {
             _parser = parser;
+            _port = port;
         }
 
         public void Start()
         {
-            IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, PORT);
+            IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, _port);
             Socket socket = new Socket(AddressFamily.InterNetwork,
                                        SocketType.Stream, ProtocolType.Tcp);
 

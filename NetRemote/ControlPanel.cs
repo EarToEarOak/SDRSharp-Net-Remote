@@ -3,7 +3,7 @@
 
  http://eartoearoak.com/software/sdrsharp-net-remote
 
- Copyright 2014 - 2015 Al Brown
+ Copyright 2014 - 2017 Al Brown
 
  A network remote control plugin for SDRSharp
 
@@ -32,10 +32,12 @@ namespace SDRSharp.NetRemote
 {
     public partial class ControlPanel : UserControl
     {
-        private const string _settingNotFirstRun = "netRemoteNotFirstRun";
         private const string _settingServerEn = "netRemoteServerEnable";
+        private const string _settingServerPort = "netRemoteServerPort";
         private const string _settingSerialEn = "netRemoteSerialEnable";
         private const string _settingSerialPort = "netRemoteSerialPort";
+
+        private const int PORT = 3382;
 
         private ISharpControl _control;
 
@@ -52,17 +54,11 @@ namespace SDRSharp.NetRemote
             _parser = new Parser(control);
             _control = control;
 
-            if (!Utils.GetBooleanSetting(_settingNotFirstRun))
-            {
-                checkNetwork.Checked = true;
-                checkSerial.Checked = true;
-            }
-            else
-            {
-                checkNetwork.Checked = Utils.GetBooleanSetting(_settingServerEn);
-                checkSerial.Checked = Utils.GetBooleanSetting(_settingSerialEn);
-            }
+            checkNetwork.Checked = Utils.GetBooleanSetting(_settingServerEn, true);
+            numPort.Value = Utils.GetIntSetting(_settingServerPort, PORT);
+            numPort.Enabled = !checkNetwork.Checked;
 
+            checkSerial.Checked = Utils.GetBooleanSetting(_settingSerialEn, true);
             string[] ports = Serial.GetPorts();
             if (ports.Length > 0)
             {
@@ -84,8 +80,8 @@ namespace SDRSharp.NetRemote
 
         public void Close()
         {
-            Utils.SaveSetting(_settingNotFirstRun, true);
             Utils.SaveSetting(_settingServerEn, checkNetwork.Checked);
+            Utils.SaveSetting(_settingServerPort, numPort.Value);
             Utils.SaveSetting(_settingSerialEn, checkSerial.Checked);
             Utils.SaveSetting(_settingSerialPort, comboSerial.SelectedItem);
 
@@ -101,7 +97,7 @@ namespace SDRSharp.NetRemote
             {
                 if (_threadServer == null)
                 {
-                    _server = new Server(_parser);
+                    _server = new Server(_parser, (int)numPort.Value);
                     _server.ServerError += OnServerError;
                     _threadServer = new Thread(new ThreadStart(_server.Start));
                     _threadServer.Start();
@@ -143,6 +139,7 @@ namespace SDRSharp.NetRemote
 
         private void CheckChangedNetwork(object sender, EventArgs e)
         {
+            numPort.Enabled = !checkNetwork.Checked;
             ServerControl();
         }
 
