@@ -51,7 +51,6 @@ namespace SDRSharp.NetRemote
             METHODS.Add("audioismuted", CmdAudioIsMuted);
 
             METHODS.Add("centrefrequency", CmdCentreFrequency);
-            METHODS.Add("centerfrequency", CmdCentreFrequency);
             METHODS.Add("frequency", CmdFrequency);
 
             METHODS.Add("detectortype", CmdDetectorType);
@@ -400,7 +399,7 @@ namespace SDRSharp.NetRemote
                 result = Response<object>(null, null);
             }
             else
-                result = Response<int>("FilterBandwidth", _control.FilterType);
+                result = Response<int>("FilterType", _control.FilterType);
 
             return result;
         }
