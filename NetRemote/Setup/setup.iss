@@ -22,7 +22,7 @@
 ;
 
 #define MyAppName "SDRSharp Net Remote"
-#define MyAppVersion GetFileVersion(AddBackslash(SourcePath) + "SDRSharp.NetRemote.dll")
+#define MyAppVersion GetFileVersion(AddBackslash(SourcePath) + "x86\SDRSharp.NetRemote.dll")
 #define MyAppPublisher "Al Brown"
 #define MyAppURL "http://eartoearoak.com/software/sdrsharp-net-remote"
 
@@ -53,7 +53,8 @@ UsePreviousAppDir=False
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: "SDRSharp.NetRemote.dll"; DestDir: "{app}"; Flags: ignoreversion;
+Source: "x86\SDRSharp.NetRemote.dll"; DestDir: "{app}"; Flags: ignoreversion; Check: not Install64
+Source: "x64\SDRSharp.NetRemote.dll"; DestDir: "{app}"; Flags: ignoreversion; Check: Install64
 
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
@@ -66,6 +67,25 @@ UseRelativePaths=True
 SelectDirLabel3=Please select the SDR# installation folder
 
 [Code]
+var
+  PlatformPage: TInputOptionWizardPage;
+
+procedure InitializeWizard;
+begin
+  PlatformPage := CreateInputOptionPage(wpSelectDir,
+    'Platform Type', '32 or 64 bits',
+    'This plugin supports the 32 or 64 bit versions of SDRSharp.' + #13#10 + #13#10 + 'Select the version you use, if you are unsure it''s probably 32 bit.',
+    True, False);
+    PlatformPage.Add('32 bit (Default)');
+    PlatformPage.Add('64 bit');
+    PlatformPage.Values[0] := True;
+end;
+
+function Install64(): Boolean;
+begin
+  Result := not PlatformPage.Values[0];
+end;
+
 procedure Error(Message: String);
 begin
   MsgBox('An error occured!' + #13#10 + Message, mbError, MB_OK);
